@@ -3,6 +3,7 @@
 import { THEME, TonConnectUIProvider } from '@tonconnect/ui-react';
 import { useEffect } from 'react';
 import { I18nProvider, useI18n, type Lang } from '@/lib/i18n';
+import { telegramAppLink } from '@/lib/telegram';
 import Shell from './Shell';
 
 export interface AppProps {
@@ -20,6 +21,8 @@ function Connected({ plot }: { plot?: string }) {
       manifestUrl={`${window.location.origin}/tonconnect-manifest.json`}
       analytics={{ mode: 'off' }}
       language={lang}
+      // In the Telegram Mini App, a wallet app sends the user back here after signing.
+      actionsConfiguration={{ twaReturnUrl: telegramAppLink() }}
       uiPreferences={{
         theme: THEME.DARK,
         borderRadius: 's',

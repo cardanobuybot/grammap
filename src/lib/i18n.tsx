@@ -100,6 +100,8 @@ const en = {
   'plot.edit': 'Change picture and link',
   'plot.share': 'Copy link to this plot',
   'plot.copied': 'Link copied',
+  'plot.shareTelegram': 'Share in Telegram',
+  'plot.shareText': '{title} on GramMap, the pixel map on TON',
   'plot.yours': 'Your plot',
   'plot.untitled': 'Plot {x}, {y}',
 
@@ -266,6 +268,8 @@ const ru: Record<Key, string> = {
   'plot.edit': 'Изменить картинку и ссылку',
   'plot.share': 'Скопировать ссылку на участок',
   'plot.copied': 'Ссылка скопирована',
+  'plot.shareTelegram': 'Поделиться в Telegram',
+  'plot.shareText': '{title} на GramMap — пиксельной карте в TON',
   'plot.yours': 'Ваш участок',
   'plot.untitled': 'Участок {x}, {y}',
 

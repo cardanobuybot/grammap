@@ -7,6 +7,7 @@ import { ApiError, fetchRejected } from '@/lib/client-api';
 import { formatDate, formatGrams, formatInt, hostOf, percent, shortAddress } from '@/lib/format';
 import { useI18n, type I18nKey, type Lang } from '@/lib/i18n';
 import { PAGES, plotPath } from '@/lib/paths';
+import { shareInTelegram, type TelegramWebApp } from '@/lib/telegram';
 import type { Plot, PublicConfig, RejectedPayment } from '@/lib/types';
 import { IconChevron } from './icons';
 import { Sheet } from './Sheet';
@@ -50,9 +51,11 @@ interface PlotPanelProps {
   onEdit(): void;
   onClose(): void;
   onToast(text: string): void;
+  /** Set inside the Telegram Mini App: links are then shared to Telegram chats. */
+  telegram: TelegramWebApp | null;
 }
 
-export function PlotPanel({ plot, config, isMine, onEdit, onClose, onToast }: PlotPanelProps) {
+export function PlotPanel({ plot, config, isMine, onEdit, onClose, onToast, telegram }: PlotPanelProps) {
   const { t, lang } = useI18n();
   const [leaving, setLeaving] = useState(false);
   const content = plot.hidden ? null : plot.content;
@@ -60,6 +63,10 @@ export function PlotPanel({ plot, config, isMine, onEdit, onClose, onToast }: Pl
   const ratio = Math.min(3, Math.max(1 / 3, plot.w / plot.h));
 
   const share = async () => {
+    if (telegram) {
+      shareInTelegram(telegram, plot.id, t('plot.shareText', { title }));
+      return;
+    }
     try {
       await navigator.clipboard.writeText(`${window.location.origin}${plotPath(plot.id)}`);
       onToast(t('plot.copied'));
@@ -148,7 +155,7 @@ export function PlotPanel({ plot, config, isMine, onEdit, onClose, onToast }: Pl
           </button>
         ) : null}
         <button type="button" className="btn btn--quiet btn--block" onClick={share}>
-          {t('plot.share')}
+          {t(telegram ? 'plot.shareTelegram' : 'plot.share')}
         </button>
       </div>
     </Sheet>

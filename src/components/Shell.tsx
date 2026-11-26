@@ -6,6 +6,7 @@ import { fetchMap } from '@/lib/client-api';
 import { formatGrams, formatInt, shortAddress } from '@/lib/format';
 import { areaProblem, plotAt, rectContains } from '@/lib/geometry';
 import { useI18n } from '@/lib/i18n';
+import { plotFromStartParam, telegram, telegramStartParam, type TelegramWebApp } from '@/lib/telegram';
 import type { MapResponse, Plot, Rect } from '@/lib/types';
 import { IconMenu, IconMinus, IconPlus, IconSheet, IconTarget, IconWallet, Logo } from './icons';
 import { MapCanvas, type Cell, type Cover, type MapHandle } from './MapCanvas';
@@ -132,23 +133,16 @@ export default function Shell({ initialPlot }: { initialPlot?: string }) {
     setOptions({ language: lang });
   }, [lang, setOptions]);
 
-  // Inside Telegram: tell the client the app is ready and take the full height.
+  // Inside Telegram (the Mini App of @grammap_app): Telegram's API, set up for the map.
+  const [tg, setTg] = useState<TelegramWebApp | null>(null);
   useEffect(() => {
-    const inTelegram = /tgWebApp(Data|Platform|Version)/.test(window.location.hash) || 'TelegramWebviewProxy' in window;
-    if (!inTelegram) return;
-    const script = document.createElement('script');
-    script.src = 'https://telegram.org/js/telegram-web-app.js';
-    script.async = true;
-    script.onload = () => {
-      try {
-        const app = (window as unknown as { Telegram?: { WebApp?: { ready(): void; expand(): void } } }).Telegram?.WebApp;
-        app?.ready();
-        app?.expand();
-      } catch {
-        /* running outside Telegram after all */
-      }
+    let alive = true;
+    void telegram().then((app) => {
+      if (alive) setTg(app);
+    });
+    return () => {
+      alive = false;
     };
-    document.head.appendChild(script);
   }, []);
 
   useEffect(() => {
@@ -170,11 +164,16 @@ export default function Shell({ initialPlot }: { initialPlot?: string }) {
     [wide],
   );
 
-  // A plot's own address (/plot/120-340) or an older shared link (?p=120-340) opens straight on that plot.
+  // A plot's own address (/plot/120-340), a Telegram link to it (t.me/grammap_app?startapp=120-340)
+  // or an older shared link (?p=120-340) opens straight on that plot.
   useEffect(() => {
     if (!data || deepLinkDone.current) return;
     deepLinkDone.current = true;
-    const m = /^(\d{1,5})-(\d{1,5})$/.exec(initialPlot ?? new URLSearchParams(window.location.search).get('p') ?? '');
+    const wanted =
+      initialPlot ??
+      plotFromStartParam(telegramStartParam(window.location)) ??
+      new URLSearchParams(window.location.search).get('p');
+    const m = /^(\d{1,5})-(\d{1,5})$/.exec(wanted ?? '');
     if (!m) return;
     const cell = { x: +m[1], y: +m[2] };
     if (cell.x >= data.config.gridW || cell.y >= data.config.gridH) return;
@@ -300,6 +299,19 @@ export default function Shell({ initialPlot }: { initialPlot?: string }) {
     }
     setPanel(null);
   }, [panel, plots]);
+
+  // Telegram's own back button closes what is open: a card first, then the selection.
+  const back = panel ? closePanel : mode === 'select' ? cancelSelect : null;
+  useEffect(() => {
+    if (!tg) return;
+    if (!back) {
+      tg.BackButton.hide();
+      return;
+    }
+    tg.BackButton.onClick(back);
+    tg.BackButton.show();
+    return () => tg.BackButton.offClick(back);
+  }, [tg, back]);
 
   const connect = useCallback(() => {
     void tonConnectUI.openModal();
@@ -525,6 +537,7 @@ export default function Shell({ initialPlot }: { initialPlot?: string }) {
           onEdit={() => setPanel({ type: 'edit', id: activePlot.id })}
           onClose={closePanel}
           onToast={setToast}
+          telegram={tg}
         />
       ) : null}
       {config && panel?.type === 'buy' ? (

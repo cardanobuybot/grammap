@@ -82,6 +82,14 @@ for crawlers, AI assistants and browsers without JavaScript. All of it is writte
 The daily cron also announces new and changed pages to Bing, Yandex and the other IndexNow engines
 (key file in `public/`). Google is told through the sitemap in Search Console.
 
+## Telegram Mini App
+
+The same site runs as the Mini App of [@grammap_app](https://t.me/grammap_app) (BotFather → Bot Settings →
+Configure Mini App → `https://grammap.app`). Inside Telegram the map loads Telegram's script, turns off
+swipe-to-close so the map can be dragged, uses Telegram's back button for cards, and shares plots as
+`https://t.me/grammap_app?startapp=X-Y` links, which open the app on that plot. Wallet apps send the
+user back to the Mini App after signing. Outside Telegram none of this runs (`src/lib/telegram.ts`).
+
 ## Development
 
 ```bash
