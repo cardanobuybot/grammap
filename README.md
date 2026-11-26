@@ -49,6 +49,9 @@ Environment variables (see `.env.example`):
 | `TELEGRAM_URL`                     | —               | Link shown in the menu                                             |
 | `TITLE_PLATE`                      | on              | `0` frees the 120×40 title area in the centre of the sheet         |
 | `BLOB_READ_WRITE_TOKEN`            | —               | Added by Vercel when a Blob store is connected                     |
+| `GOOGLE_SITE_VERIFICATION`         | —               | Code from Google Search Console, when confirming by meta tag       |
+| `YANDEX_VERIFICATION`              | —               | Code from Yandex Webmaster, when confirming by meta tag            |
+| `BING_SITE_VERIFICATION`           | —               | Code from Bing Webmaster Tools (`msvalidate.01`)                   |
 
 Use a treasury wallet that receives nothing but GramMap payments, and do not change `TREASURY_ADDRESS`,
 `PRICE_PER_PIXEL` or the grid once plots are sold: the map is derived from that wallet's history under these rules.
@@ -58,6 +61,26 @@ Use a treasury wallet that receives nothing but GramMap payments, and do not cha
 Send any small amount from the treasury wallet (or a wallet in `ADMIN_ADDRESSES`) to the treasury with the comment
 `gm:h:X:Y` to hide the picture and link of the plot covering that pixel, `gm:s:X:Y` to show them again. The plot
 stays with its owner.
+
+## Search engines and AI assistants
+
+The map itself is drawn in the browser, so every address also carries a server-rendered text version
+for crawlers, AI assistants and browsers without JavaScript. All of it is written once, in
+`src/lib/seo-content.ts`, with figures taken from the settings.
+
+| Address                    | What it is                                                                 |
+| -------------------------- | -------------------------------------------------------------------------- |
+| `/`, `/ru`                 | The map, with its text version: facts, how to buy, the newest plots        |
+| `/about`, `/ru/about`      | How it works, prices, rules, questions and answers (FAQ structured data)   |
+| `/terms`, `/ru/terms`      | Terms and privacy                                                          |
+| `/plot/X-Y`                | One plot: the map opened on it, plus its title, picture, link and owner    |
+| `/llms.txt`                | Short brief for language models ([llmstxt.org](https://llmstxt.org))       |
+| `/llms-full.txt`           | Everything above in one Markdown file                                      |
+| `/sitemap.xml`             | All pages and every plot that shows content, with language alternates      |
+| `/robots.txt`              | Open to everyone; AI crawlers are named explicitly                         |
+
+The daily cron also announces new and changed pages to Bing, Yandex and the other IndexNow engines
+(key file in `public/`). Google is told through the sitemap in Search Console.
 
 ## Development
 
@@ -94,4 +117,6 @@ src/lib/state.ts         sync and saved state
 src/lib/content.ts       picture, title and link validation and storage
 src/app/api/*            map, sync, order, drafts, rejected, cron
 src/components/*         map canvas, purchase flow, panels
+src/components/site/*    server-rendered pages: about, terms, plot pages, text version of the map
+src/lib/seo*.ts          site copy, robots, sitemap, llms.txt, structured data
 ```

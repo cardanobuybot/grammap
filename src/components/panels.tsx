@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { ApiError, fetchRejected } from '@/lib/client-api';
 import { formatDate, formatGrams, formatInt, hostOf, percent, shortAddress } from '@/lib/format';
 import { useI18n, type I18nKey, type Lang } from '@/lib/i18n';
+import { PAGES, plotPath } from '@/lib/paths';
 import type { Plot, PublicConfig, RejectedPayment } from '@/lib/types';
 import { IconChevron } from './icons';
 import { Sheet } from './Sheet';
@@ -60,7 +61,7 @@ export function PlotPanel({ plot, config, isMine, onEdit, onClose, onToast }: Pl
 
   const share = async () => {
     try {
-      await navigator.clipboard.writeText(`${window.location.origin}/?p=${plot.id}`);
+      await navigator.clipboard.writeText(`${window.location.origin}${plotPath(plot.id)}`);
       onToast(t('plot.copied'));
     } catch {
       /* clipboard can be blocked; the address bar still has the link */
@@ -292,7 +293,7 @@ export function MinePanel({ plots, connected, onConnect, onOpenPlot, onClose }: 
 /* ---------------------------------------------------------------- about */
 
 export function AboutPanel({ config, onClose }: { config: PublicConfig; onClose(): void }) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const price = formatGrams(config.pricePerPixel);
   const fee = formatGrams(config.editFee);
   return (
@@ -326,6 +327,9 @@ export function AboutPanel({ config, onClose }: { config: PublicConfig; onClose(
         <h3>{t('about.rules')}</h3>
         <p>{t('about.rulesText')}</p>
         <p>{t('about.honest')}</p>
+        <p>
+          <Link href={PAGES.about[lang]}>{t('about.more')}</Link>
+        </p>
       </div>
     </Sheet>
   );
@@ -450,7 +454,7 @@ export function MenuPanel(props: MenuPanelProps) {
             {t('menu.disconnect')}
           </button>
         ) : null}
-        <Link className="link" href="/terms">
+        <Link className="link" href={PAGES.terms[lang]}>
           {t('menu.terms')}
         </Link>
       </div>

@@ -166,6 +166,7 @@ const en = {
   'about.rulesText':
     'No illegal or adult content, no scams, no pretending to be someone else’s project. A plot that breaks the rules is hidden without a refund. Links are added by owners; GramMap does not check them.',
   'about.honest': 'A plot is advertising space on this map. It is not an investment, and GramMap promises no income from it.',
+  'about.more': 'All details and answers to questions',
 };
 
 type Key = keyof typeof en;
@@ -331,6 +332,7 @@ const ru: Record<Key, string> = {
   'about.rulesText':
     'Без незаконного и взрослого контента, без мошенничества и без подделки под чужие проекты. Участок с нарушением скрывается без возврата. Ссылки добавляют владельцы; GramMap их не проверяет.',
   'about.honest': 'Участок — это рекламное место на карте. Это не инвестиция, и GramMap не обещает с него никакого дохода.',
+  'about.more': 'Все подробности и ответы на вопросы',
 };
 
 const dictionaries: Record<Lang, Record<Key, string>> = { en, ru };
@@ -347,18 +349,20 @@ const I18nContext = createContext<I18n | null>(null);
 
 const STORAGE_KEY = 'grammap.lang';
 
-function initialLang(): Lang {
+/** The visitor's saved choice first, then the language of the address (/ru), then the browser's. */
+function initialLang(routeLang?: Lang): Lang {
   try {
     const saved = window.localStorage.getItem(STORAGE_KEY);
     if (saved === 'en' || saved === 'ru') return saved;
   } catch {
-    /* storage can be unavailable; fall through to the browser language */
+    /* storage can be unavailable; fall through */
   }
+  if (routeLang) return routeLang;
   return typeof navigator !== 'undefined' && /^(ru|uk|be|kk)\b/i.test(navigator.language) ? 'ru' : 'en';
 }
 
-export function I18nProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>(initialLang);
+export function I18nProvider({ children, routeLang }: { children: ReactNode; routeLang?: Lang }) {
+  const [lang, setLangState] = useState<Lang>(() => initialLang(routeLang));
 
   useEffect(() => {
     document.documentElement.lang = lang;

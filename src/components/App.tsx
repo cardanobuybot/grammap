@@ -1,10 +1,18 @@
 'use client';
 
 import { THEME, TonConnectUIProvider } from '@tonconnect/ui-react';
-import { I18nProvider, useI18n } from '@/lib/i18n';
+import { useEffect } from 'react';
+import { I18nProvider, useI18n, type Lang } from '@/lib/i18n';
 import Shell from './Shell';
 
-function Connected() {
+export interface AppProps {
+  /** Language of the address the map was opened on (/ru). The visitor's own choice still wins. */
+  lang?: Lang;
+  /** Plot to open on, for the map at /plot/x-y. */
+  plot?: string;
+}
+
+function Connected({ plot }: { plot?: string }) {
   const { lang } = useI18n();
   return (
     <TonConnectUIProvider
@@ -23,16 +31,24 @@ function Connected() {
         },
       }}
     >
-      <Shell />
+      <Shell initialPlot={plot} />
     </TonConnectUIProvider>
   );
 }
 
 /** Browser-only root: TON Connect needs `window`, so this never renders on the server. */
-export default function App() {
+export default function App({ lang, plot }: AppProps) {
+  // The page under the map is its text version for crawlers and browsers without JavaScript.
+  // With the map running it is out of sight, so it must be out of reach of the keyboard and screen readers too.
+  useEffect(() => {
+    const text = document.getElementById('text-version');
+    text?.setAttribute('inert', '');
+    return () => text?.removeAttribute('inert');
+  }, []);
+
   return (
-    <I18nProvider>
-      <Connected />
+    <I18nProvider routeLang={lang}>
+      <Connected plot={plot} />
     </I18nProvider>
   );
 }

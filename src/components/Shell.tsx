@@ -79,7 +79,7 @@ function Stepper({ label, value, max, less, more, onChange }: StepperProps) {
   );
 }
 
-export default function Shell() {
+export default function Shell({ initialPlot }: { initialPlot?: string }) {
   const { t, lang, setLang } = useI18n();
   const [tonConnectUI, setOptions] = useTonConnectUI();
   const rawAddress = useTonAddress(false);
@@ -170,11 +170,11 @@ export default function Shell() {
     [wide],
   );
 
-  // A shared link (?p=120-340) opens straight on that plot.
+  // A plot's own address (/plot/120-340) or an older shared link (?p=120-340) opens straight on that plot.
   useEffect(() => {
     if (!data || deepLinkDone.current) return;
     deepLinkDone.current = true;
-    const m = /^(\d{1,5})-(\d{1,5})$/.exec(new URLSearchParams(window.location.search).get('p') ?? '');
+    const m = /^(\d{1,5})-(\d{1,5})$/.exec(initialPlot ?? new URLSearchParams(window.location.search).get('p') ?? '');
     if (!m) return;
     const cell = { x: +m[1], y: +m[2] };
     if (cell.x >= data.config.gridW || cell.y >= data.config.gridH) return;
@@ -187,7 +187,7 @@ export default function Shell() {
         mapRef.current?.flyTo({ ...cell, w: 1, h: 1 });
       }
     });
-  }, [data, openPlot]);
+  }, [data, openPlot, initialPlot]);
 
   const handleTap = useCallback(
     (cell: Cell, plot: Plot | null) => {

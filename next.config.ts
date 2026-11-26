@@ -17,6 +17,9 @@ const nextConfig: NextConfig = {
           { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
         ],
       },
+      // Data for the app, not pages: crawlers may fetch it (the map needs /api/map to draw), but it has no place in search results.
+      { source: '/api/:path*', headers: [{ key: 'X-Robots-Tag', value: 'noindex' }] },
+      { source: '/tonconnect-manifest.json', headers: [{ key: 'X-Robots-Tag', value: 'noindex' }] },
     ];
   },
 };

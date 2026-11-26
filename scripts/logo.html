@@ -1,0 +1,46 @@
+<!doctype html>
+<!-- Source of public/logo.png, the horizontal logo for listings and posts. Render at 2400×720:
+     google-chrome --headless --screenshot=public/logo.png --window-size=1200,360 --force-device-scale-factor=2 --hide-scrollbars scripts/logo.html -->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      @font-face {
+        font-family: 'Jura';
+        src: url('../node_modules/@fontsource-variable/jura/files/jura-latin-wght-normal.woff2') format('woff2');
+        font-weight: 300 700;
+      }
+      html, body { margin: 0; }
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 56px;
+        width: 1200px;
+        height: 360px;
+        overflow: hidden;
+        background: #071a38;
+        color: #eaf2ff;
+        font-family: 'Jura', sans-serif;
+      }
+      svg { flex: none; width: 168px; height: 168px; }
+      span {
+        /* Same proportions as the name in the site's top bar. */
+        font-size: 126px;
+        font-weight: 700;
+        line-height: 1;
+        letter-spacing: 0.02em;
+        transform: translateY(-4px);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- The mark from src/components/icons.tsx: a sheet with one plot staked out. -->
+    <svg viewBox="0 0 28 28" fill="none">
+      <rect x="2.75" y="2.75" width="22.5" height="22.5" rx="2" stroke="#eaf2ff" stroke-width="1.5" />
+      <path d="M10.5 3v22M17.5 3v22M3 10.5h22M3 17.5h22" stroke="#eaf2ff" stroke-width="1" opacity="0.32" />
+      <rect x="10.5" y="10.5" width="7" height="7" fill="#ff6b2c" />
+    </svg>
+    <span>GramMap</span>
+  </body>
+</html>
