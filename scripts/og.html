@@ -1,0 +1,82 @@
+<!doctype html>
+<!-- Source of public/og.png. Render at 1200×630:
+     google-chrome --headless --screenshot=public/og.png --window-size=1200,630 --hide-scrollbars scripts/og.html -->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      @font-face {
+        font-family: 'Jura';
+        src: url('../node_modules/@fontsource-variable/jura/files/jura-latin-wght-normal.woff2') format('woff2');
+        font-weight: 300 700;
+      }
+      html, body { margin: 0; }
+      body {
+        position: relative;
+        width: 1200px;
+        height: 630px;
+        overflow: hidden;
+        background-color: #0e3371;
+        background-image:
+          linear-gradient(rgba(234, 242, 255, 0.24) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(234, 242, 255, 0.24) 1px, transparent 1px),
+          linear-gradient(rgba(234, 242, 255, 0.09) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(234, 242, 255, 0.09) 1px, transparent 1px);
+        background-size: 300px 300px, 300px 300px, 30px 30px, 30px 30px;
+        background-position: 0 15px, 0 15px, 0 15px, 0 15px;
+        color: #eaf2ff;
+        font-family: 'Jura', sans-serif;
+      }
+      .plate {
+        position: absolute;
+        left: 180px;
+        top: 195px;
+        width: 840px;
+        height: 240px;
+        box-sizing: border-box;
+        border: 2px solid rgba(234, 242, 255, 0.9);
+        background: #071a38;
+        text-align: center;
+      }
+      .plate::after {
+        position: absolute;
+        inset: 12px;
+        border: 1px solid rgba(234, 242, 255, 0.35);
+        content: '';
+      }
+      h1 { margin: 34px 0 0; font-size: 112px; font-weight: 700; line-height: 1; letter-spacing: 0.02em; }
+      p { margin: 22px 0 0; color: rgba(234, 242, 255, 0.72); font-size: 28px; font-weight: 500; }
+      .plot { position: absolute; box-sizing: border-box; }
+      .chalk { border: 1px solid rgba(234, 242, 255, 0.4); background: rgba(234, 242, 255, 0.2); }
+      .stake { border: 3px solid #ff6b2c; background: rgba(255, 107, 44, 0.22); }
+      .dim { position: absolute; background: #ff6b2c; }
+      .tag {
+        position: absolute;
+        padding: 3px 10px;
+        background: #071a38;
+        color: #ff6b2c;
+        font-size: 22px;
+        font-weight: 700;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="plot chalk" style="left: 60px; top: 75px; width: 150px; height: 90px"></div>
+    <div class="plot chalk" style="left: 240px; top: 45px; width: 60px; height: 60px"></div>
+    <div class="plot chalk" style="left: 930px; top: 465px; width: 210px; height: 120px"></div>
+    <div class="plot chalk" style="left: 90px; top: 495px; width: 90px; height: 90px"></div>
+    <div class="plot chalk" style="left: 690px; top: 495px; width: 60px; height: 30px"></div>
+    <div class="plot chalk" style="left: 480px; top: 75px; width: 120px; height: 60px"></div>
+
+    <div class="plot stake" style="left: 870px; top: 45px; width: 180px; height: 120px"></div>
+    <div class="dim" style="left: 870px; top: 26px; width: 180px; height: 2px"></div>
+    <div class="tag" style="left: 918px; top: 10px">6 px</div>
+    <div class="dim" style="left: 1068px; top: 45px; width: 2px; height: 120px"></div>
+    <div class="tag" style="left: 1084px; top: 90px">4 px</div>
+
+    <div class="plate">
+      <h1>GramMap</h1>
+      <p>A million pixels on TON. One pixel, one GRAM.</p>
+    </div>
+  </body>
+</html>
