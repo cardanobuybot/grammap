@@ -136,6 +136,7 @@ describe('llms.txt', () => {
 
   it('reports the live numbers', () => {
     expect(brief).toContain('Sold so far: 141 of 1,000,000 pixels, in 3 plots held by 2 owners (as of 2026-11-26 10:00 UTC)');
+    expect(llmsTxt(config, [shown], now)).toContain('in 1 plot held by 1 owner (as of');
   });
 
   it('says nothing about sales it cannot see', () => {
@@ -212,6 +213,11 @@ describe('site copy', () => {
     expect(ru.faq).toHaveLength(en.faq.length);
     expect(ru.sections.map((s) => s.id)).toEqual(en.sections.map((s) => s.id));
     expect(ru.sections.map((s) => s.steps?.length)).toEqual(en.sections.map((s) => s.steps?.length));
+  });
+
+  it('counts in the right form', () => {
+    expect(en.ui.soldLine(1, 1, 1)).toBe('Sold: 1 of 1,000,000 pixels, in 1 plot held by 1 owner.');
+    expect(en.ui.soldLine(5286, 48, 10)).toBe('Sold: 5,286 of 1,000,000 pixels, in 48 plots held by 10 owners.');
   });
 
   it('follows the settings in both languages', () => {

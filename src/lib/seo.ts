@@ -6,6 +6,7 @@ import {
   SITE_NAME,
   SITE_URL,
   absolute,
+  count,
   plotPath,
   siteContent,
   type SiteContent,
@@ -131,8 +132,8 @@ function factLines(c: SiteContent, config: PublicConfig, plots: readonly Plot[] 
   if (plots) {
     const stats = mapStats(plots);
     lines.push(
-      `- Sold so far: ${enNumber(stats.pixels)} of ${enNumber(config.gridW * config.gridH)} pixels, in ${enNumber(stats.plots)} plots ` +
-        `held by ${enNumber(stats.owners)} owners (as of ${now.toISOString().slice(0, 16).replace('T', ' ')} UTC)`,
+      `- Sold so far: ${enNumber(stats.pixels)} of ${enNumber(config.gridW * config.gridH)} pixels, in ${count(stats.plots, 'plot')} ` +
+        `held by ${count(stats.owners, 'owner')} (as of ${now.toISOString().slice(0, 16).replace('T', ' ')} UTC)`,
     );
   }
   lines.push(`- Sales: ${config.salesOpen ? 'open' : 'not open yet'}`);

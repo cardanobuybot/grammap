@@ -63,7 +63,7 @@ export interface SiteContent {
     updated: string;
     plotsHeading: string;
     plotsEmpty: string;
-    soldLine: (pixels: string, plots: string, owners: string) => string;
+    soldLine: (pixels: number, plots: number, owners: number) => string;
     plotLine: (w: number, h: number, x: number, y: number) => string;
     untitled: (x: number, y: number) => string;
     address: string;
@@ -77,6 +77,8 @@ export interface SiteContent {
 }
 
 const number = (n: number, lang: SeoLang) => new Intl.NumberFormat(lang === 'ru' ? 'ru-RU' : 'en-US').format(n);
+/** "1 plot", "2 plots". English only: the Russian copy is worded so that no noun follows a number. */
+export const count = (n: number, noun: string, lang: SeoLang = 'en') => `${number(n, lang)} ${noun}${n === 1 ? '' : 's'}`;
 
 export function siteContent(lang: SeoLang, config: PublicConfig): SiteContent {
   const total = number(config.gridW * config.gridH, lang);
@@ -214,7 +216,8 @@ export function siteContent(lang: SeoLang, config: PublicConfig): SiteContent {
         updated: 'Обновлено',
         plotsHeading: 'Участки на карте',
         plotsEmpty: 'Пока ничего не продано. Первый участок может стать вашим.',
-        soldLine: (pixels, plots, owners) => `Продано ${pixels} из ${total} пикселей: участков — ${plots}, владельцев — ${owners}.`,
+        soldLine: (pixels, plots, owners) =>
+          `Продано ${number(pixels, lang)} из ${total} пикселей: участков — ${number(plots, lang)}, владельцев — ${number(owners, lang)}.`,
         plotLine: (w, h, x, y) => `${w} × ${h} px, координаты X ${x}, Y ${y}`,
         untitled: (x, y) => `Участок ${x}, ${y}`,
         address: 'Адрес GramMap',
@@ -353,7 +356,8 @@ export function siteContent(lang: SeoLang, config: PublicConfig): SiteContent {
       updated: 'Updated',
       plotsHeading: 'Plots on the map',
       plotsEmpty: 'Nothing is sold yet. The first plot can be yours.',
-      soldLine: (pixels, plots, owners) => `${pixels} of ${total} pixels are sold, in ${plots} plots held by ${owners} owners.`,
+      soldLine: (pixels, plots, owners) =>
+        `Sold: ${number(pixels, lang)} of ${total} pixels, in ${count(plots, 'plot', lang)} held by ${count(owners, 'owner', lang)}.`,
       plotLine: (w, h, x, y) => `${w} × ${h} px at X ${x}, Y ${y}`,
       untitled: (x, y) => `Plot ${x}, ${y}`,
       address: 'GramMap address',

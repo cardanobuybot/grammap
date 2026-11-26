@@ -30,11 +30,10 @@ export function homeMetadata(lang: SeoLang): Metadata {
 
 function PlotList({ c, plots }: { c: SiteContent; plots: readonly Plot[] }) {
   const stats = mapStats(plots);
-  const n = (v: number) => new Intl.NumberFormat(c.lang === 'ru' ? 'ru-RU' : 'en-US').format(v);
   if (plots.length === 0) return <p>{c.ui.plotsEmpty}</p>;
   return (
     <>
-      <p>{c.ui.soldLine(n(stats.pixels), n(stats.plots), n(stats.owners))}</p>
+      <p>{c.ui.soldLine(stats.pixels, stats.plots, stats.owners)}</p>
       <ul className="doc__plots">
         {newestFirst(plots)
           .slice(0, HOME_PLOTS)
