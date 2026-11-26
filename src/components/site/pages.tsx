@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { formatGrams, hostOf } from '@/lib/format';
 import { loadPageData } from '@/lib/page-data';
 import { aboutJsonLd, homeJsonLd, mapStats, newestFirst, plotJsonLd } from '@/lib/seo';
-import { PAGES, SITE_NAME, plotPath, siteContent, type SeoLang, type SiteContent } from '@/lib/seo-content';
+import { PAGES, SITE_NAME, count, plotPath, siteContent, type SeoLang, type SiteContent } from '@/lib/seo-content';
 import { getServerConfig, toPublicConfig } from '@/lib/server-config';
 import { OG_IMAGE, pageMetadata } from '@/lib/site-metadata';
 import { friendlyOf } from '@/lib/ton';
@@ -259,7 +259,7 @@ export function PlotPage({ plot, config }: { plot: Plot; config: PublicConfig })
             <div>
               <dt>Size</dt>
               <dd>
-                {plot.w} × {plot.h} px ({new Intl.NumberFormat('en-US').format(plot.w * plot.h)} pixels)
+                {plot.w} × {plot.h} px ({count(plot.w * plot.h, 'pixel')})
               </dd>
             </div>
             <div>
