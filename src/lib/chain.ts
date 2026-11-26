@@ -110,7 +110,10 @@ export function fromTonapi(t: Json): ChainTx | null {
 }
 
 async function getJson(url: string, headers: Record<string, string>): Promise<Json> {
-  const res = await fetch(url, { headers, cache: 'no-store', signal: AbortSignal.timeout(9000) });
+  // No cache option on purpose. Next.js never caches a fetch unless asked to, so every call
+  // reaches the indexer; but 'no-store' would also turn the statically built pages that read
+  // the map (/, /plot/X-Y, …) into errors when they are rebuilt in the background.
+  const res = await fetch(url, { headers, signal: AbortSignal.timeout(9000) });
   if (!res.ok) throw new Error(`${new URL(url).host} answered ${res.status}`);
   return (await res.json()) as Json;
 }

@@ -3,10 +3,10 @@ import { notFound, redirect } from 'next/navigation';
 import { cache } from 'react';
 import { PlotPage, plotMetadata } from '@/components/site/pages';
 import { plotAt } from '@/lib/geometry';
+import { pageState } from '@/lib/page-data';
 import { plotPath } from '@/lib/seo-content';
 import { getServerConfig, toPublicConfig } from '@/lib/server-config';
 import { mapViewport } from '@/lib/site-metadata';
-import { getState } from '@/lib/state';
 import type { Plot, PublicConfig } from '@/lib/types';
 
 /**
@@ -40,12 +40,10 @@ const find = cache(async (id: string): Promise<Found> => {
 
   // If the saved map cannot be read this throws, and that is right: "no such plot" must
   // never be answered, and cached, on a guess.
-  let { state } = await getState(30_000);
-  let plot = plotAt(state.plots, x, y);
+  let plot = plotAt((await pageState(30_000)).plots, x, y);
   if (!plot) {
     // Perhaps bought seconds ago, and its owner is sharing the link already: look again.
-    ({ state } = await getState(3_000));
-    plot = plotAt(state.plots, x, y);
+    plot = plotAt((await pageState(3_000)).plots, x, y);
   }
   return { plot, config };
 });
